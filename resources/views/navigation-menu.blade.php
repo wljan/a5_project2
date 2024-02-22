@@ -5,15 +5,22 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-mark class="block h-9 w-auto" />
+                    <a @auth href="{{ route('dashboard') }}" @else href="#" @endauth>
+                        <x-application-mark class="block h-6 w-auto" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
+                @auth
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
+                    </x-nav-link>
+                </div>
+                @endauth
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('welcome') }}" :active="request()->routeIs('welcome')">
+                        {{ __('Home') }}
                     </x-nav-link>
                 </div>
             </div>
