@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
-
+use App\Models\Contact;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,16 +14,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::name('welcome.')
+    ->prefix('welcome')
+    ->middleware(['auth'])
+    ->group(function () {
+        Route::get('/', function () {
+            return view('welcome');
+        })->name('index');
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    });
+
+Route::name('dashboard.')
+    ->prefix('dashboard')
+    ->middleware(['auth', 'verified'])
+    ->group(function () {
+        Route::get('/', function () {
+            return view('dashboard');
+        })->name('index');
+
+
+    Route::post('contacts', [ContactController::class, 'store'])->name('store');
+
+
 });

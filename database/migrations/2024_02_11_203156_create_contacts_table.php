@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
             $table->timestamps();
             $table->string('title');
             $table->string('description');
             $table->string('image_path');
-            $table->string('youtube_video_id');
+            $table->string('youtube_links_1');
+            $table->string('youtube_links_2');
+            $table->string('youtube_links_3');
             $table->string('textcolor');
             $table->string('backgroundcolor');
         });

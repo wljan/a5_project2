@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
+
 class User extends Authenticatable
 {
     use HasApiTokens;
@@ -29,6 +30,10 @@ class User extends Authenticatable
         'password',
     ];
 
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

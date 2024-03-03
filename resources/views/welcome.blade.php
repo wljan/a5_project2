@@ -21,8 +21,13 @@
 
 
                 <div class="mx-auto">
-                    <div class="bg-white m-auto text-center shadow-xl p-4">
+                    <div class="bg-white m-auto text-center shadow-xl rounded-md mt-8 mx-12 p-4">
 <input type="search" class="rounded-md" placeholder="Filter bands.."/>
+                    </div>
+
+                    <div class="mx-auto">
+                    <div class="bg-white m-auto min-h-40 text-center shadow-xl rounded-md mt-8 mx-12 p-4">
+                        
                     </div>
                 </div>
 

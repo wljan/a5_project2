@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Contact;
+use App\Models\Contact;
+use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
@@ -14,9 +15,9 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $contacts = Contact::all();
-
-        return view('contacts.index', compact('contacts'));
+        $user = Auth::user();
+        $contacts = $user->contacts;
+        return view('dashboard.index', ['contacts' => $contacts]);
     }
 
     /**
@@ -24,10 +25,7 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        return view('contacts.create');
-	}
+
 
     /**
      * Store a newly created resource in storage.
@@ -35,16 +33,39 @@ class ContactController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+   public function store(Request $request)
     {
-        $request->validate([
-            'first_name'=>'required',
-            'last_name'=>'required',
-            'email'=>'required'
+        $validatedData = $request->validate([
+            'title' => 'required|min:3',
+            'image' => 'required|file|mimes:jpeg,jpg,png',
+            'description' => 'required|min:3',
+            'youtube_links_1' => 'required|string',
+            'youtube_links_2' => 'required|string',
+            'youtube_links_3' => 'required|string',
+            'textcolor' => 'required|string',
+            'backgroundcolor' => 'required|string',
         ]);
 
-        Contact::create($request->all());
-        return redirect()->route('contacts.index')->with('success', 'Contact is bewaard!');
+        $user = Auth::user();
+
+        // Access the 'video' file from the validated data
+        $contact = $request->file('image');
+
+        // Store the video file in the 'public/videos' directory
+        $contactPath = $contact->store('images', 'public');
+
+        $newContact = $user->contacts()->create([
+            'title' => $validatedData['title'],
+            'image_path' => $contactPath,
+            'description' => $validatedData['description'],
+            'youtube_links_1' => $validatedData['youtube_links_1'],
+            'youtube_links_2' => $validatedData['youtube_links_2'],
+            'youtube_links_3' => $validatedData['youtube_links_3'],
+            'textcolor' => $validatedData['textcolor'],
+            'backgroundcolor' => $validatedData['backgroundcolor'],
+        ]);
+
+        return back();
     }
 
     /**
