@@ -23,11 +23,13 @@
                 <div class="mx-auto">
                     <div class="bg-white m-auto text-center shadow-xl rounded-md mt-8 mx-12 p-4">
 <input type="search" class="rounded-md" placeholder="Filter bands.."/>
+<button type="submit">Search</button>
                     </div>
 
                     <div class="mx-auto">
                     <div class="bg-white m-auto min-h-40 text-center shadow-xl rounded-md mt-8 mx-12 p-4">
-                        
+                        <p class="font-semibold text-2xl">All bands</p>
+                        <x-contact-list :contacts="$contacts" />
                     </div>
                 </div>
 
