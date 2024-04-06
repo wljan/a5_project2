@@ -39,7 +39,7 @@
         </div>
 
         @stack('modals')
-
+        <x-footer />
         @livewireScripts
     </body>
 </html>

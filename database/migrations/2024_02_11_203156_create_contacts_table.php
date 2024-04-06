@@ -17,10 +17,9 @@ return new class extends Migration
             $table->timestamps();
             $table->string('title');
             $table->string('description');
+            $table->longText('biography');
             $table->string('image_path');
-            $table->string('youtube_links_1');
-            $table->string('youtube_links_2');
-            $table->string('youtube_links_3');
+            $table->string('youtube_links')->nullable();
             $table->string('textcolor');
             $table->string('backgroundcolor');
         });

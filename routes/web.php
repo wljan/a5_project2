@@ -18,22 +18,23 @@ Route::name('welcome.')
     ->prefix('welcome')
     ->middleware(['auth'])
     ->group(function () {
-        Route::get('/', function () {
-            return view('welcome');
-        })->name('index');
-
+        Route::get('/', [ContactController::class, 'list'])->name('index');
     });
 
 Route::name('dashboard.')
     ->prefix('dashboard')
     ->middleware(['auth', 'verified'])
     ->group(function () {
-        Route::get('/', function () {
-            return view('dashboard');
-        })->name('index');
+        Route::get('/', [ContactController::class, 'index'])->name('index');
+        Route::post('/contacts', [ContactController::class, 'store'])->name('store');
+        Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
+        Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name('contacts.edit');
+        Route::patch('/contacts/{contact}/edit/update', [ContactController::class, 'update'])->name('contacts.update');
+        Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])->name('destroy');
 
 
-    Route::post('contacts', [ContactController::class, 'store'])->name('store');
+});
 
-
+Route::fallback(function () {
+    return redirect()->route('dashboard.index');
 });

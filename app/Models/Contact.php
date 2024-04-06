@@ -15,7 +15,7 @@ class Contact extends Model
     }
 
     protected $fillable = [
-        'title', 'description','image_path','youtube_links_1','youtube_links_2','youtube_links_3','textcolor','backgroundcolor'
+        'title', 'description', 'biography','image_path','youtube_links', 'textcolor','backgroundcolor'
         ];
 
 }

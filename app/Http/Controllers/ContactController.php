@@ -8,59 +8,41 @@ use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         $user = Auth::user();
         $contacts = $user->contacts;
-        return view('dashboard.index', ['contacts' => $contacts]);
+        return view('dashboard', ['contacts' => $contacts]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-   public function store(Request $request)
+    public function store(Request $request)
     {
         $validatedData = $request->validate([
             'title' => 'required|min:3',
             'image' => 'required|file|mimes:jpeg,jpg,png',
             'description' => 'required|min:3',
-            'youtube_links_1' => 'required|string',
-            'youtube_links_2' => 'required|string',
-            'youtube_links_3' => 'required|string',
+            'biography' => 'required|min:3',
+            'youtube_links' => 'required|array',
+            'youtube_links.*' => 'url',
             'textcolor' => 'required|string',
             'backgroundcolor' => 'required|string',
         ]);
 
         $user = Auth::user();
 
-        // Access the 'video' file from the validated data
-        $contact = $request->file('image');
+        // Access the 'image' file from the validated data
+        $image = $request->file('image');
 
-        // Store the video file in the 'public/videos' directory
-        $contactPath = $contact->store('images', 'public');
+        // Store the image file in the 'public/images' directory
+        $imagePath = $image->store('images', 'public');
 
         $newContact = $user->contacts()->create([
             'title' => $validatedData['title'],
-            'image_path' => $contactPath,
+            'image_path' => $imagePath,
             'description' => $validatedData['description'],
-            'youtube_links_1' => $validatedData['youtube_links_1'],
-            'youtube_links_2' => $validatedData['youtube_links_2'],
-            'youtube_links_3' => $validatedData['youtube_links_3'],
+            'biography' => $validatedData['biography'],
+            'youtube_links' => implode('|', $validatedData['youtube_links']),
             'textcolor' => $validatedData['textcolor'],
             'backgroundcolor' => $validatedData['backgroundcolor'],
         ]);
@@ -68,53 +50,68 @@ class ContactController extends Controller
         return back();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Contact $contact)
     {
         return view('contacts.show', compact('contact'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function list(Request $request)
+{
+    $query = $request->input('query');
+
+    if ($query) {
+        $contacts = Contact::where('title', 'like', '%' . $query . '%')
+                            ->orWhere('description', 'like', '%' . $query . '%')
+                            ->get();
+    } else {
+        $contacts = Contact::all();
+    }
+
+    return view('welcome', ['contacts' => $contacts, 'query' => $query]);
+}
+
+
+
     public function edit(Contact $contact)
     {
         // $contact = Contact::find($id);
         return view('contacts.edit', compact('contact'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Contact $contact)
-    {
-        $request->validate([
+{
+    // Validate the incoming request data
+    $validatedData = $request->validate([
+        'title' => 'required|min:3',
+        'description' => 'required|min:3',
+        'biography' => 'required|min:3',
+        'image' => 'nullable|file|mimes:jpeg,jpg,png', // Optionally validate the image if it's being updated
+        'backgroundcolor' => 'required|string',
+        'textcolor' => 'required|string',
+    ]);
 
-        ]);
+    // Update the contact with the validated data
+    $contact->update([
+        'title' => $validatedData['title'],
+        'description' => $validatedData['description'],
+        'biography' => $validatedData['biography'],
+        'backgroundcolor' => $validatedData['backgroundcolor'],
+        'textcolor' => $validatedData['textcolor'],
+    ]);
 
-        $contact->update($request->all());
-
-        return redirect('/contacts')->with('success', 'Contact is aangepast!');
+    // If the request contains an updated image, update the image
+    if ($request->hasFile('image')) {
+        // Handle image upload and update logic here
+        // Example:
+        $imagePath = $request->file('image')->store('images', 'public');
+        $contact->image_path = $imagePath;
+        $contact->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // Redirect back with a success message
+    return redirect()->route('dashboard.index');
+}
+
     public function destroy(Contact $contact)
     {
               // $contact = Contact::find($id);
@@ -122,4 +119,6 @@ class ContactController extends Controller
 
         return back()->with('success', 'Contact is verwijderd!');
     }
+
+
 }
