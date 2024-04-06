@@ -19,7 +19,6 @@ Route::name('welcome.')
     ->middleware(['auth'])
     ->group(function () {
         Route::get('/', [ContactController::class, 'list'])->name('index');
-
     });
 
 Route::name('dashboard.')

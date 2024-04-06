@@ -22,8 +22,10 @@
 
                 <div class="mx-auto">
                     <div class="bg-white m-auto text-center shadow-xl rounded-md mt-8 mx-12 p-4">
-<input type="search" class="rounded-md" placeholder="Filter bands.."/>
-<button type="submit">Search</button>
+                        <form action="{{ route('welcome.index') }}" method="GET">
+                            <input type="text" name="query" placeholder="Search..." class="rounded-md">
+                            <button class="p-2 px-4 bg-indigo-400 m-auto rounded-md text-neutral-50" type="submit">Search</button>
+                        </form>
                     </div>
 
                     <div class="mx-auto">

@@ -6,10 +6,10 @@
     class="aspect-video rounded-md bg-gray-50 w-full"
     src="{{ asset('storage/' . $contact->image_path) }}"/>
 
-    <div class="p-2 w-32 font-semibold">
+    <div class="p-2 font-semibold">
     {{ $contact->title }}
     </div>
-    <div class="p-2 w-32">
+    <div class="p-2">
     {{ $contact->description }}
     </div>
 </div>

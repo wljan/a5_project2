@@ -55,11 +55,20 @@ class ContactController extends Controller
         return view('contacts.show', compact('contact'));
     }
 
-    public function list(Contact $contact)
-    {
-            $contacts = Contact::all(); // Assuming Contact is your model name
-            return view('welcome', ['contacts' => $contacts]);
+    public function list(Request $request)
+{
+    $query = $request->input('query');
+
+    if ($query) {
+        $contacts = Contact::where('title', 'like', '%' . $query . '%')
+                            ->orWhere('description', 'like', '%' . $query . '%')
+                            ->get();
+    } else {
+        $contacts = Contact::all();
     }
+
+    return view('welcome', ['contacts' => $contacts, 'query' => $query]);
+}
 
 
 
@@ -110,4 +119,6 @@ class ContactController extends Controller
 
         return back()->with('success', 'Contact is verwijderd!');
     }
+
+
 }
